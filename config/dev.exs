@@ -40,8 +40,7 @@ config :phoenix, :stacktrace_depth, 20
 config :xcoin_data, XcoinData.Repo,
   adapter: Ecto.Adapters.Postgres,
   username: "postgres",
-  password: "postgres",
+  password: "",
   database: "xcoin_data_dev",
-  hostname: "db",
-  port: 5432,
+  hostname: "localhost",
   pool_size: 10

@@ -4,6 +4,7 @@ defmodule XcoinData.Services.KrakenService do
   """
 
   import XcoinData.Services.RequestService
+  alias XcoinData.Backend
 
   @api_key System.get_env("KRAKEN_API_KEY")
   @api_secret System.get_env("KRAKEN_SECRET_KEY")
@@ -25,9 +26,10 @@ defmodule XcoinData.Services.KrakenService do
         [ask, aq, av] = result[pair]["a"]
         [bid, bq, bv] = result[pair]["b"]
         IO.puts "ask: #{ask} bid: #{bid}"
-        XcoinData.Backend.create_kraken_rate(%{pair: pair, bid: bid, ask: ask})
-      %{"error" => %{"status" => status}} -> IO.puts "Error status: " <> status
+        Backend.create_kraken_rate(%{pair: pair, ask: ask, bid: bid})
+      %{"error" => error, "result" => %{}} -> IO.puts "Error: " <> error[0]
       %{"error" => %{"status" => 500, "reason" => reason}} -> IO.puts "Error: " <> reason
+      %{"error" => %{"status" => 520}} -> IO.puts "Unknown error in Kraken API service"
     end
   end
 

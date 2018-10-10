@@ -4,6 +4,7 @@ defmodule XcoinData.Services.BitstampService do
   """
 
   import XcoinData.Services.RequestService
+  alias XcoinData.Backend
 
   @api_version "v2/"
   @base_uri "https://www.bitstamp.net/api/"
@@ -18,10 +19,10 @@ defmodule XcoinData.Services.BitstampService do
     %{"ask" => ask, "bid" => bid } = get_public_request(url)
     case get_public_request(url) do
       %{"ask" => ask, "bid" => bid } ->
-        Backend.create_bitstamp_rate(%{pair: pair, bid: bid, ask: ask})
-        IO.puts "ask: " <> ask <> " bid: " <> bid
-      %{"error" => %{"status" => status}} -> IO.puts "Error status: " <> status
+        Backend.create_bitstamp_rate(%{pair: pair, ask: String.to_float(ask), bid: String.to_float(bid)})
+      %{"error" => %{"reason" => reason, "status" => status}} -> IO.puts "Error status: " <> status
       %{"error" => %{"status" => 500, "reason" => reason}} -> IO.puts "Error: " <> reason
+      %{"error" => %{"status" => 520}} -> IO.puts "Unknown error in Bitstamp API service"
     end
   end
 

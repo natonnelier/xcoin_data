@@ -25,3 +25,12 @@ config :logger, :console,
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"
+
+# Cron jobs Quantum
+config :xcoin_data, XcoinData.Scheduler,
+    jobs: [
+        {"*/5 * * * *",   fn -> Mix.Task.rerun "monitor.acx.all_rates" end},
+        {"*/5 * * * *",   fn -> Mix.Task.rerun "monitor.bitstamp.all_rates" end},
+        {"*/5 * * * *",   fn -> Mix.Task.rerun "monitor.dsx.all_rates" end},
+        {"*/5 * * * *",   fn -> Mix.Task.rerun "monitor.kraken.all_rates" end}
+    ]

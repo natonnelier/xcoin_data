@@ -5,6 +5,8 @@ defmodule XcoinData.Services.AcxService do
 
   import XcoinData.Services.RequestService
 
+  alias XcoinData.Backend
+
   @api_key System.get_env("ACX_API_KEY")
   @api_secret System.get_env("ACX_SECRET_KEY")
   @api_version "v2/"
@@ -17,11 +19,10 @@ defmodule XcoinData.Services.AcxService do
     url = @base_uri <> @api_version <> "tickers/" <> pair <> ".json"
     case get_public_request(url) do
       %{"ticker" => %{"buy" => bid, "sell" => ask}} ->
-        #Backend.create_acx_rate(%{pair: pair, bid: bid, ask: ask})
-        IO.puts "AcxRate created"
-        IO.puts "buy: #{bid} sell: #{ask}"
-      %{"error" => %{"status" => status}} -> IO.puts "Error status: " <> status
+        Backend.create_acx_rate(%{pair: pair, ask: String.to_float(ask), bid: String.to_float(bid)})
+      %{"error" => %{"status" => 404}} -> IO.puts "404 Not found"
       %{"error" => %{"status" => 500, "reason" => reason}} -> IO.puts "Error: " <> reason
+      %{"error" => %{"status" => 520}} -> IO.puts "Unknown error in ACX api service"
     end
   end
 

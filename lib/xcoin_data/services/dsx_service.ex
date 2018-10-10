@@ -4,6 +4,7 @@ defmodule XcoinData.Services.DsxService do
   """
 
   import XcoinData.Services.RequestService
+  alias XcoinData.Backend
 
   @base_uri "https://dsx.uk/mapi/"
 
@@ -18,8 +19,7 @@ defmodule XcoinData.Services.DsxService do
     if response[pair] do
       bid = response[pair]["buy"]
       ask = response[pair]["sell"]
-      IO.puts "ask: " <> "#{ask}" <> " bid: " <> "#{bid}"
-      #Backend.create_dsx_rate(%{pair: pair, bid: bid, ask: ask})
+      Backend.create_dsx_rate(%{pair: pair, ask: ask, bid: bid})
     else
       IO.puts "Error"
     end

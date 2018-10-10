@@ -198,45 +198,73 @@ defmodule XcoinData.Backend do
     Rate.changeset(rate, %{})
   end
 
+  alias XcoinData.Backend.AcxRate
+
   @doc """
   Create acx_rate
   """
 
   def create_acx_rate(attrs \\ %{}) do
-    %XcoinData.Backend.AcxRate{}
+    ensure_all_started
+    %AcxRate{}
     |> AcxRate.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, acx_rate} -> Kernel.inspect acx_rate
+      {:error, changeset} -> Kernel.inspect changeset
+    end
   end
+
+  alias XcoinData.Backend.BitstampRate
 
   @doc """
   Create bitstamp_rate
   """
 
   def create_bitstamp_rate(attrs \\ %{}) do
-    %XcoinData.Backend.BitstampRate{}
+    ensure_all_started
+    %BitstampRate{}
     |> BitstampRate.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, bitstamp_rate} -> Kernel.inspect bitstamp_rate
+      {:error, changeset} -> Kernel.inspect changeset
+    end
   end
+
+  alias XcoinData.Backend.DsxRate
 
   @doc """
   Create dsx_rate
   """
 
   def create_dsx_rate(attrs \\ %{}) do
-    %XcoinData.Backend.DsxRate{}
+    ensure_all_started
+    %DsxRate{}
     |> DsxRate.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, dsx_rate} -> Kernel.inspect dsx_rate
+      {:error, changeset} -> Kernel.inspect changeset
+    end
   end
+
+  alias XcoinData.Backend.KrakenRate
 
   @doc """
   Create kraken_rate
   """
 
-  def create_kraken_rate(%{pair: pair, bid: bid, ask: ask}) do
-    IO.puts normalize(pair)
-    #%XcoinData.Backend.KrakenRate{}
-    #|> KrakenRate.changeset(attrs)
-    #|> Repo.insert()
+  def create_kraken_rate(%{pair: pair	, ask: ask, bid: bid}) do
+    ensure_all_started
+    normalized_pair = normalize(pair)
+    %KrakenRate{}
+    |> KrakenRate.changeset(%{pair: normalized_pair, ask: ask, bid: bid})
+    |> Repo.insert()
+    |> case do
+      {:ok, kraken_rate} -> Kernel.inspect kraken_rate
+      {:error, changeset} -> Kernel.inspect changeset
+    end
   end
 
   defp normalize(xcoin) do
@@ -288,4 +316,9 @@ defmodule XcoinData.Backend do
     end
 
   end
+
+  defp ensure_all_started do
+    {:ok, _} = Application.ensure_all_started(:xcoin_data)
+  end
+
 end

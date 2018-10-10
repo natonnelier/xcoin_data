@@ -14,6 +14,7 @@ defmodule XcoinData.Application do
       supervisor(XcoinDataWeb.Endpoint, []),
       # Start your own worker by calling: XcoinData.Worker.start_link(arg1, arg2, arg3)
       # worker(XcoinData.Worker, [arg1, arg2, arg3]),
+      worker(XcoinData.Scheduler, [])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

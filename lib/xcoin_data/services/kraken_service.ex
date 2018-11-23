@@ -27,7 +27,7 @@ defmodule XcoinData.Services.KrakenService do
         [bid, bq, bv] = result[pair]["b"]
         IO.puts "ask: #{ask} bid: #{bid}"
         Backend.create_kraken_rate(%{pair: pair, ask: ask, bid: bid})
-      %{"error" => error, "result" => %{}} -> IO.puts "Error: " <> error[0]
+      %{"error" => error, "result" => %{}} -> IO.puts "Error: " <> Kernel.inspect(error)
       %{"error" => %{"status" => 500, "reason" => reason}} -> IO.puts "Error: " <> reason
       %{"error" => %{"status" => 520}} -> IO.puts "Unknown error in Kraken API service"
     end

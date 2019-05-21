@@ -21,7 +21,7 @@ defmodule XcoinData.Services.DsxService do
       ask = response[pair]["sell"]
       Backend.create_dsx_rate(%{pair: pair, ask: ask, bid: bid})
     else
-      IO.puts "Error"
+      IO.puts "Error on dsx_service ticker_rate for pair #{pair}"
     end
   end
 
